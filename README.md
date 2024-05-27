@@ -1,6 +1,7 @@
 # Chaos_game_fractal_generation
 How to install:
 Clone this repository
+
 Purpose:
 The purpose of this code is to be able to take any transformation matrix that represents a transition system and being able to generate regular fractals
 
