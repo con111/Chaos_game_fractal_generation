@@ -1,0 +1,101 @@
+import math
+from mpl_toolkits import mplot3d
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import random
+import numpy as np
+import random
+import matplotlib.pyplot as plt
+'''
+Making a modular fractal transformation chaosgame for 3d
+'''
+def f_a(x,y,z):
+    """ transformation function for a
+    """
+    new_x = (1/3)*x
+    new_y = (1/3)*y
+    new_z = (1/3)*z
+    return new_x, new_y, new_z
+
+def f_b(x,y,z):
+    """ transformation function for b
+    """
+    new_x = 1+ (1/3)*(x-1)
+    new_y = (1/3)*y
+    new_z = (1/3)*z
+    return new_x, new_y, new_z
+
+def f_c(x,y,z):
+    """ transformation function for c
+    """
+    new_x = 1 + (1/3)*(x-1)
+    new_y = 1 + (1/3)*(y-1)
+    new_z = (1/3)*z
+    return new_x, new_y, new_z
+
+def f_d(x,y,z):
+    """ transformation function for d
+    """
+    new_x = (1/3)*x
+    new_y = 1 + (1/3)*(y-1)
+    new_z = (1/3)*z
+    return new_x, new_y, new_z
+
+def f_e(x,y,z):
+    """ transformation function for e
+    """
+    new_x = (1/math.sqrt(2)) + (1/3)*(x - (1/math.sqrt(2)))
+    new_y = (1/math.sqrt(2)) + (1/3)*(y - (1/math.sqrt(2)))
+    new_z = (math.sqrt(3)/4) + (1/3)*(z - (math.sqrt(3)/4))
+    return new_x, new_y, new_z
+
+'''
+User initializer
+'''
+num_states = 3
+num_transformers = 5
+transformers = [f_a, f_b, f_c, f_d, f_e]
+transition_matric = [[[4], [2,3],[0,1]],
+                    [[2,3], [0],[]],
+                    [[0,1],[],[3]]]
+x_points = []
+y_points = []
+z_points = []
+int_seq =  [] #this will be the num_state sequence
+trans_seq = [] #this will keep track of the transformations used before a new point is created
+starting_state = 0
+x = int(input("what is the initial x value?"))
+y = int(input("what is your initial y value?"))
+z = int(input("what is your initial z value?"))
+
+def modular_fractal(x,y,z, starting_state): #what is the starting point and what is the state to check for when we need to generate a new point
+    current_state = starting_state #setting the current_state to the inital starting
+    for i in range(0,1000): #iterate through this 1000 times
+        print(i)
+        print(x_points) #keeping track of x coordinates
+        print(y_points) #keeping track of y coordinates
+        print(z_points) #keeping track of z coordinates
+        if starting_state == current_state: #check if we are at the starting state
+            x_points.append(x) #add to x coordinate
+            y_points.append(y) #add to y coordinate
+            z_points.append(z) #add to z coordinate
+        next_state = random.randint(0, num_states-1) #determine which state we are going next
+        int_seq.append(next_state) #tracking the next state
+        num_options = len(transition_matric[current_state][next_state]) #look at the possible choices based what functinos are avaliable
+        if num_options > 0: #we can pick an option
+            transformer_choice = random.randint(0, num_options-1) #we are randomly choosing the transformer choice #this is an indedx
+            next_transformer = transition_matric[current_state][next_state][transformer_choice]
+            new_x, new_y, new_z = transformers[next_transformer](x, y, z) #we are selecting the transformation function
+            x, y, z = new_x, new_y, new_z #this is the new starting point
+            current_state = next_state
+        else: #we picked an impossible path
+            pass 
+    return x_points, y_points, z_points
+
+print(modular_fractal(x,y,z,0))
+
+# Plotting in 3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(x_points, y_points, z_points, s=1)
+plt.show()
